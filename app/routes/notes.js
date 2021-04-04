@@ -32,4 +32,14 @@ router.post('/', (req, res) => {
         })
 })
 
+router.delete('/:noteId', (req, res) => {
+    Note.deleteOne({ _id: req.params.noteId })
+        .then(data => {
+            res.json(data)
+        })
+        .catch(e => {
+            res.json({ message: e })
+        })
+})
+
 module.exports = router
