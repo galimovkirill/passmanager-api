@@ -13,9 +13,14 @@ router.get('/', (req, res) => {
 })
 
 router.post('/', (req, res) => {
+    console.log(req.body)
     const note = new Note({
-        title: req.body.title,
-        description: req.body.description
+        name: req.body.name,
+        login: req.body.login,
+        password: req.body.password,
+        url: req.body.url,
+        description: req.body.description,
+        date: req.body.date
     })
 
     note.save()

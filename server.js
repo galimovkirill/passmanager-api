@@ -3,6 +3,7 @@ require('dotenv/config')
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cors = require('cors')
 const PORT = process.env.PORT || 8080
 const app = express()
 
@@ -10,7 +11,9 @@ const app = express()
 const notesRoutes = require('./app/routes/notes')
 
 // Middleware
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 app.use('/notes', notesRoutes)
 
 async function start() {
