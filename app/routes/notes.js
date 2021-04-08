@@ -4,12 +4,14 @@ const Note = require('../models/Note')
 
 router.get('/', (req, res) => {
     Note.find()
-        .then(notes => {
-            res.json(notes)
-        })
-        .catch(err => {
-            res.json({ message: err })
-        })
+        .then(notes => res.json(notes))
+        .catch(err => res.json({ message: err }))
+})
+
+router.get('/:id', (req, res) => {
+    Note.findById(req.params.id)
+        .then(note => res.json(note))
+        .catch(err => console.log(err))
 })
 
 router.post('/', (req, res) => {
@@ -24,22 +26,20 @@ router.post('/', (req, res) => {
     })
 
     note.save()
-        .then(data => {
-            res.json(data)
-        })
-        .catch(e => {
-            res.json({ message: e })
-        })
+        .then(data => res.json(data))
+        .catch(e => res.json({ message: e }))
 })
 
 router.delete('/:noteId', (req, res) => {
     Note.deleteOne({ _id: req.params.noteId })
-        .then(data => {
-            res.json(data)
-        })
-        .catch(e => {
-            res.json({ message: e })
-        })
+        .then(data => res.json(data))
+        .catch(e => res.json({ message: e }))
+})
+
+router.put('/:noteId', (req, res) => {
+    Note.updateOne({ _id: req.params.noteId }, req.body)
+        .then(data => res.json(data))
+        .catch(e => res.json({ message: e }))
 })
 
 module.exports = router
