@@ -9,12 +9,14 @@ const app = express()
 
 // Import routes
 const notesRoutes = require('./app/routes/notes')
+const authRoutes = require('./app/routes/auth')
 
 // Middleware
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use('/notes', notesRoutes)
+app.use('/auth', authRoutes)
 
 async function start() {
     try {
