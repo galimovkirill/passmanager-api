@@ -1,4 +1,4 @@
-const User = require('../models/User')
+﻿const User = require('../models/User')
 const Role = require('../models/Role')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -20,15 +20,23 @@ class authController {
                 return res.status(400).json({ message: 'Creating user error.', errors })
             }
 
-            const { first_name, last_name, email, password } = req.body
+            const { first_name, last_name, email, password, roles } = req.body
             const candidate = await User.findOne({ email }) // если юзер с таким email уже зарегистрирован - посылаем ошибку
             if (candidate) {
                 return res.status(400).json({ message: 'User with the given email already exist.' })
             }
 
             const hashPassword = bcrypt.hashSync(password, 7)
-            const userRole = await Role.findOne({ value: 'ADMIN' })
-            const user = new User({ first_name, last_name, email, password: hashPassword, roles: [userRole.value] })
+            const userRoles = ['USER'] // роль по умолчанию
+            for (const role of roles) {
+                const r = await Role.findOne({ value: role })
+                if (r) {
+                    userRoles.push(r.value)
+                } else {
+                    return res.status(400).json({ message: 'Incorrect passed roles.' })
+                }
+            }
+            const user = new User({ first_name, last_name, email, password: hashPassword, roles: userRoles })
             await user.save()
             return res.json({ message: 'User has been successfully created.' })
         } catch(e) {
