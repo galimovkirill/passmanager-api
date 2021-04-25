@@ -20,10 +20,10 @@ class authController {
                 return res.status(400).json({ message: 'Creating user error.', errors })
             }
 
-            const { first_name, last_name, email, password, roles } = req.body
-            const candidate = await User.findOne({ email }) // если юзер с таким email уже зарегистрирован - посылаем ошибку
+            const { first_name, last_name, username, password, roles } = req.body
+            const candidate = await User.findOne({ username }) // если юзер с таким username уже зарегистрирован - посылаем ошибку
             if (candidate) {
-                return res.status(400).json({ message: 'User with the given email already exist.' })
+                return res.status(400).json({ message: 'User with the given username already exist.' })
             }
 
             const hashPassword = bcrypt.hashSync(password, 7)
@@ -36,12 +36,12 @@ class authController {
                     return res.status(400).json({ message: 'Incorrect passed roles.' })
                 }
             }
-            const user = new User({ first_name, last_name, email, password: hashPassword, roles: userRoles })
+            const user = new User({ first_name, last_name, username, password: hashPassword, roles: userRoles })
             await user.save()
             return res.json({ message: 'User has been successfully created.' })
         } catch(e) {
-            const { first_name, last_name, email, password } = req.body
-            console.log(first_name, last_name, email, password)
+            const { first_name, last_name, username, password } = req.body
+            console.log(first_name, last_name, username, password)
             console.log(e)
             res.status(400).json({ message: 'Creating user error.' })
         }
@@ -49,10 +49,10 @@ class authController {
 
     async login(req, res) {
         try {
-            const { email, password } = req.body
-            const user = await User.findOne({ email })
+            const { username, password } = req.body
+            const user = await User.findOne({ username })
             if (!user) {
-                return res.status(400).json({ message: 'User with given email not found.' })
+                return res.status(400).json({ message: 'User with given username not found.' })
             }
 
             // Сравниваем пароль от юзера с паролем в БД
